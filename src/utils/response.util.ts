@@ -6,6 +6,7 @@ export interface ApiResponse<T = unknown> {
   message: string;
   data?: T;
   meta?: Record<string, unknown>;
+  code?: string;
   errors?: unknown;
 }
 
@@ -29,12 +30,14 @@ export const errorResponse = (
   c: Context,
   message: string = 'Internal Server Error',
   status: ContentfulStatusCode = 500,
-  errors?: unknown
+  errors?: unknown,
+  code?: string
 ) => {
   const payload: ApiResponse = {
     success: false,
     message,
-    ...(errors ? { errors } : {}),
+    ...(code ? { code } : {}),
+    ...(errors !== undefined ? { errors } : {}),
   };
   return c.json(payload, status);
 };
